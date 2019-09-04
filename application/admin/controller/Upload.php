@@ -15,6 +15,7 @@ class Upload extends Controller
     public function index()
     {
         //
+
     }
 
     /**
@@ -36,11 +37,15 @@ class Upload extends Controller
     public function save(Request $request)
     {
         //
-
         $file = request()->file('file');
+// 移动到框架应用根目录/public/uploads/ 目录下
         $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
         if($info){
-            echo DS.'uploads'.DS.$info->getSaveName();
+            return json([
+                'code'=>config('code.success'),
+                'msg'=>'图片上传成功',
+                'src'=>DS.'uploads'.DS.$info->getSaveName(),
+            ]);
         }
     }
 
@@ -76,16 +81,15 @@ class Upload extends Controller
     public function update(Request $request, $id)
     {
         //
-        $data = $this->request->put();
-        $srcs = $data['srcs'];
-        for($i = 0;$i<count($srcs);$i++){
-            $path =UPLOAD_PATH . $srcs[$i];
+        $data=$this->request->put();
+        $src=$data['src'];
+        for($i=0;$i<count($src);$i++){
+            $path=UPLOAD_PATH.$src[$i];
             if(!file_exists($path)){
                 continue;
             }
             unlink($path);
         }
-
     }
 
     /**
@@ -96,30 +100,16 @@ class Upload extends Controller
      */
     public function delete($id)
     {
-        $data = $this->request->get('path');
-        // \uploads\20190823\56c8ff3352e07d888d739a3f2840c8e1.webp
-
-        $path =UPLOAD_PATH . $data;
-        if(file_exists($path)){
-            $result = unlink($path);
-            if($result){
-                return  json([
-                    'code'=>config('code.success'),
-                    'msg'=>'文件删除成功'
-                ])  ;
-            }else{
-                return  json([
-                    'code'=>config('code.fail'),
-                    'msg'=>'文件删除失败'
-                ])  ;
-            }
-
-        }else{
-           return  json([
-               'code'=>config('code.fail'),
-               'msg'=>'文件不存在'
-           ])  ;
-        }
-
+        //
+        $data=$this->request->get('path');
+        $result=UPLOAD_PATH.$data;
+       if(file_exists($result)){
+           if($result){
+               unlink($result);
+               return json([
+                   'msg'=>'删除成功'
+               ]);
+           }
+       }
     }
 }

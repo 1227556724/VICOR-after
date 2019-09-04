@@ -8,22 +8,23 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-use think\Route;
 
-// 后台管理员登陆
+use think\Route;
+//重新定义路由,后台管理员登录
 Route::resource('api/login','admin/Login');
-// 后台分类管理
+//后台分类管理
 Route::resource('api/category','admin/Category');
-// 商品管理
 Route::resource('api/goods','admin/Goods');
-// 图片上传
 Route::resource('api/upload','admin/Upload');
 Route::resource('api/team','admin/Team');
-// 推荐商品
+//推荐商品
 Route::resource('api/recommendgoods','admin/Recommendgoods');
-// 用户注册
-Route::resource('api/userlogin','index/Login');
-Route::resource('api/shopcart','index/Shopcart');
+//用户注册
+Route::resource('api/reg','admin/Registered');
+//购物车
+Route::resource('api/shopcar','index/Shopcar');
+//历史记录
+Route::resource('api/historygoods','index/historyGoods');
 
 return [
     '__pattern__' => [

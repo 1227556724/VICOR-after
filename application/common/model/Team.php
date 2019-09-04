@@ -8,14 +8,22 @@ use think\Model;
 
 class Team extends Model
 {
-  protected $autoWriteTimestamp = true;
-  function inserts($data){
-      return $this->isUpdate(false)->allowField(true)->save($data);
-  }
-  function  queryone($id){
-      return $this->where('id',$id)->field('id,tname,avatar,des,exp,cid')->find();
-  }
-  function queryone1($data){
-      return $this->where($data)->find();
-  }
+    protected $table='team';
+    protected $autoWriteTimestamp=true;
+    public function finds($id){
+        return $this->where('tid',$id)->field('tid,tname,exp,cid,des,avatar')->find();
+    }
+    public function inserts($data){
+        return $this->isUpdate(false)->allowField(true)->save($data);
+    }
+    public function deletes($id){
+        return $this->where('tid',$id)->delete();
+    }
+
+    public function updates($data,$id){
+        return $this->isUpdate(true)->save($data,['tid'=>$id]);
+    }
+    public function queryones($arr){
+        return $this->where($arr)->find();
+    }
 }

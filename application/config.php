@@ -240,12 +240,12 @@ return [
         'var_page'  => 'page',
         'list_rows' => 15,
     ],
-    // 状态码配置
+//    状态码配置
     'code'=>[
         'success'=>200,
         'fail'=>404
     ],
-    'jwtkey'=>'wuif1904',
-    // 用户注册登录是盐
+    'jwtkey'=>'sh001',
+    //用户注册登录时的盐
     'salt'=>'vicor'
 ];

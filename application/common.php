@@ -10,10 +10,9 @@
 // +----------------------------------------------------------------------
 use think\JWT;
 // 应用公共文件
-/*
- *  header,get,post
- *
- * */
+//放公共的方法，不放数据库的操作、业务逻辑
+//验证token
+//在header、get、post方式进行传递
 function checkJWT(){
     $authorization = request()->header('Authorization');
     $getToken = request()->get('token');
@@ -41,11 +40,10 @@ function checkJWT(){
     }
     request()->id = $result['id'];
 }
-
-function randomNames(){
-    $time = time();
-    $charts = ['q','w','e','r','t','y','u','i'];
-    shuffle($charts);
-    $str = join('',array_slice($charts,0,5));
+function randomName(){
+    $time=time();
+    $arr=['v','i','c','o','r'];
+    shuffle($arr);
+    $str=join(array_slice($arr,0,5));
     return $str.'_'.$time;
 }

@@ -15,8 +15,10 @@ class Login extends Controller
      */
     public function index()
     {
-        $data = $this->request->get();
-         return  json($data);
+        $data=$this->request->get();
+        return json($data);
+
+        //
     }
 
     /**
@@ -37,42 +39,35 @@ class Login extends Controller
      */
     public function save(Request $request)
     {
-        $data = $this->request->post();
-        $validate = validate('Login');
+       $data= $this->request->post();
+        $validate=validate('Login');
         if(!$validate->check($data)){
-            return  json([
-               'code'=>config('code.fail'),
-               'msg'=>$validate->getError()
+            return json([
+                'code'=>config('code.fail'),
+                'msg'=>$validate->getError()
             ]);
         }
+        $username=$data['username'];
+        $password=md5($data['password']);
+        $result=Db::table('manager')
+                ->where(['username'=>$username,'password'=>$password])->find();
 
-        $username = $data['username'];
-        $password = md5($data['password']);
-
-        $result = Db::table('manager')->where(['username'=>$username,'password'=>$password])
-            ->find();
         if($result){
-           $code = config('code.success');
-           $msg = '登录成功';
-           $token = JWT::getToken(['id'=>$result['id']],config('jwtkey'));
+            $token=JWT::getToken(['id'=>$result['id']],config('jwtkey'));
+            $code=config('code.success');
+            $msg='登录成功';
+
         }else{
-            $code = config('code.fail');
-            $msg = '登录失败';
-            $token = '';
+            $code=config('code.fail');
+            $msg='登录失败';
+            $token='';
         }
         return json([
             'code'=>$code,
             'msg'=>$msg,
-            'token'=>$token
+            'token'=>$token,
         ]);
-
-
-       /*
-        *
-
-        *
-        * */
-
+        //
     }
 
     /**
@@ -107,7 +102,6 @@ class Login extends Controller
     public function update(Request $request, $id)
     {
         //
-        echo 'update';
     }
 
     /**
@@ -118,8 +112,6 @@ class Login extends Controller
      */
     public function delete($id)
     {
-        $data = $this->request->get();
-        $data['id'] = $id;
-        return json($data);
+        //
     }
 }

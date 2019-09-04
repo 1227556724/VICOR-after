@@ -15,32 +15,29 @@ class Recommendgoods extends Controller
      */
     public function index()
     {
-         $data  = $this->request->get();
-         $cid = $data['typeid'];
-         $gid = $data['gid'];
-         $sdata = [];
-         if($cid){
-             $sdata['cid'] = $cid;
-         }
-         $sdata['gid'] = ['<>',$gid];
-         $recommendGoods = Db::table('goods')->where($sdata)->order('gid','desc')
-             ->limit(0,4)
-             ->select();
-
-         if($recommendGoods){
-             return  json([
+        //
+        $gid=$this->request->get('gid');
+        $cid=$this->request->get('typeid');
+        $sarr=[];
+        if($cid&&$cid!=0){
+            $sarr['cid']=$cid;
+        }
+        $sarr['gid']=['<>',$gid];
+        $recommend=Db::table('goods')->where($sarr)
+            ->order('gid','desc')->limit(0,4)->select();
+        if($recommend){
+            return json([
                 'code'=>config('code.success'),
                 'msg'=>'商品获取成功',
-                'data'=>$recommendGoods
-             ]);
-         }else{
-             return  json([
-                 'code'=>config('code.success'),
-                 'msg'=>'暂无数据',
-                 'data'=>[]
-             ]);
-         }
-
+                'data'=>$recommend
+            ]);
+        }else{
+            return json([
+                'code'=>config('code.fail'),
+                'msg'=>'商品获取失败',
+                'data'=>[]
+            ]);
+        }
     }
 
     /**

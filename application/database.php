@@ -15,13 +15,13 @@ return [
     // 服务器地址
     'hostname'        => 'localhost',
     // 数据库名
-    'database'        => 'vicor',
+    'database'        => 'VICOR',
     // 用户名
     'username'        => 'root',
     // 密码
-    'password'        => '',
+    'password'        => 'root',
     // 端口
-    'hostport'        => '3306',
+    'hostport'        => '8888',
     // 连接dsn
     'dsn'             => '',
     // 数据库连接参数
