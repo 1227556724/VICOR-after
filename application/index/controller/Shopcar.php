@@ -58,13 +58,23 @@ class Shopcar extends Controller
         $data=$this->request->get();
         $gid=$data['gid'];
         $state=$data['state'];
+        $price=$data['price']*$data['total'];
         if($state==1&&!empty($state)){
             $state=0;
         }else{
             $state=1;
         }
+        if($state==1){
+            $total=Db::table('cart')->where(['uid'=>$uid])->setInc('total',$data['total']);
+            $price=Db::table('cart')->where(['uid'=>$uid])
+                ->setInc('price',$price);
+        }else{
+            $total=Db::table('cart')->where(['uid'=>$uid])->setDec('total',$data['total']);
+            $price=Db::table('cart')->where(['uid'=>$uid])
+                ->setDec('price',$price);
+        }
         $result=Db::table('cart_extra')->where(['uid'=>$uid,'gid'=>$gid])->update(['state'=>$state]);
-        if($result){
+        if($result&&$total&&$price){
             return json([
                 'code'=>config('code.success'),
                 'msg'=>'修改成功'
@@ -214,7 +224,7 @@ class Shopcar extends Controller
             Db::commit();
             return json([
                 'code'=>config('code.success'),
-                'msg'=>''
+                'msg'=>'删除成功'
             ]);
         }else{
             Db::rollback();
@@ -234,9 +244,34 @@ class Shopcar extends Controller
     public function delete($id)
     {
         //
+        $data=$this->request->get();
+        $state=$data['change'];
         $uid=$this->request->id;
-        $result=Db::table('cart_extra')->where('uid',$uid)->update(['state'=>1]);
-        if($result){
+        $cart=Db::table('cart')->where('uid',$uid)->find();
+        $cart_extra=Db::table('cart_extra')
+            ->alias('c')->join('goods','c.gid=goods.gid')
+            ->field('c.num,goods.price')
+            ->where('uid',$uid)->select();
+        $price=0;
+        $total=0;
+        for ($i=0;$i<count($cart_extra);$i++){
+            $price +=$cart_extra[$i]['price']*$cart_extra[$i]['num'];
+            $total +=$cart_extra[$i]['num'];
+        }
+//        var_dump($total);
+//        exit();
+        if($state==0){
+            $total=Db::table('cart')->where(['uid'=>$uid])->setDec('total',$total);
+            $price=Db::table('cart')->where(['uid'=>$uid])
+                ->setDec('price',$price);
+        }else{
+            $total=Db::table('cart')->where(['uid'=>$uid])->update(['total'=>$total]);
+            $price=Db::table('cart')->where(['uid'=>$uid])
+                ->update(['price'=>$price]);
+        }
+
+        $result=Db::table('cart_extra')->where('uid',$uid)->update(['state'=>$state]);
+        if($result&&$total&&$price){
             Db::commit();
             return json([
                 'code'=>config('code.success'),

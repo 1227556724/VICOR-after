@@ -25,6 +25,8 @@ Route::resource('api/reg','admin/Registered');
 Route::resource('api/shopcar','index/Shopcar');
 //历史记录
 Route::resource('api/historygoods','index/historyGoods');
+//订单
+Route::resource('api/orders','index/Orders');
 
 return [
     '__pattern__' => [
